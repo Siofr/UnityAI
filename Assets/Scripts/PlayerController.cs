@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class AIController : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     private NavMeshAgent _navMeshAgent;
     private NavMeshPath _navMeshPath;
     private LineRenderer lineRenderer;
-
-    public float detectDistance;
 
     // Start is called before the first frame update
     void Start()
@@ -22,18 +20,20 @@ public class AIController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Physics.Raycast(transform.position, Vector3.forward, out RaycastHit hit, detectDistance))
+        if (Input.GetMouseButtonDown(0))
         {
-            if(hit.transform.tag == "Player")
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if(Physics.Raycast(ray, out RaycastHit hit))
             {
                 SetAITargetLocation(hit.point);
             }
+            
         }
 
         if (_navMeshAgent.hasPath)
         {
             CreateAIPath();
-        }
+        } 
         else
         {
             lineRenderer.enabled = false;
