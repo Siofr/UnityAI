@@ -28,19 +28,7 @@ public class AIController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        GameObject target = null;
-
-        foreach (GameObject player in players)
-        {
-            direction = player.transform.position - transform.position;
-            angle = Vector3.Angle(transform.forward, direction);
-
-            if (angle <= detectAngle && Physics.Linecast(transform.position, player.transform.position, out RaycastHit hit) && detectDistance >= Vector3.Distance(transform.position, player.transform.position))
-            {
-                target = player;
-                SetAITargetLocation(hit.transform.position);
-            }
-        }
+        ChasePlayer();
 
         if (_navMeshAgent.hasPath)
         {
@@ -64,5 +52,26 @@ public class AIController : MonoBehaviour
         NavMesh.CalculatePath(transform.position, _navMeshAgent.destination, NavMesh.AllAreas, _navMeshPath);
         lineRenderer.positionCount = _navMeshPath.corners.Length;
         lineRenderer.SetPositions(_navMeshPath.corners);
+    }
+
+    private void ChasePlayer()
+    {
+        GameObject target = null;
+
+        foreach (GameObject player in players)
+        {
+            direction = player.transform.position - transform.position;
+            angle = Vector3.Angle(transform.forward, direction);
+
+            if (angle <= detectAngle && Physics.Linecast(transform.position, player.transform.position, out RaycastHit hit) && detectDistance >= Vector3.Distance(transform.position, player.transform.position))
+            {
+                target = hit.transform.gameObject;
+            }
+
+            if (target != null)
+            {
+                SetAITargetLocation(target.transform.position);
+            }
+        }
     }
 }

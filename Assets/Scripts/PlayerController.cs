@@ -9,18 +9,21 @@ public class PlayerController : MonoBehaviour
     private NavMeshPath _navMeshPath;
     private LineRenderer lineRenderer;
 
+    public int mouseClick; // 0 For left click, 1 for right click
+
     // Start is called before the first frame update
     void Start()
     {
         _navMeshAgent = GetComponent<NavMeshAgent>();
         _navMeshPath = new NavMeshPath();
         lineRenderer = GetComponent<LineRenderer>();
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(mouseClick))
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if(Physics.Raycast(ray, out RaycastHit hit))
