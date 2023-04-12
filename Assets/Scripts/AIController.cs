@@ -8,8 +8,13 @@ public class AIController : MonoBehaviour
     private NavMeshAgent _navMeshAgent;
     private NavMeshPath _navMeshPath;
     private LineRenderer lineRenderer;
+    private Vector3 direction;
+    private float angle;
 
     public float detectDistance;
+    public float detectAngle;
+
+    public GameObject[] players;
 
     // Start is called before the first frame update
     void Start()
@@ -17,16 +22,23 @@ public class AIController : MonoBehaviour
         _navMeshAgent = GetComponent<NavMeshAgent>();
         _navMeshPath = new NavMeshPath();
         lineRenderer = GetComponent<LineRenderer>();
+        players = GameObject.FindGameObjectsWithTag("Player");
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Physics.Raycast(transform.position, Vector3.forward, out RaycastHit hit, detectDistance))
+        GameObject target = null;
+
+        foreach (GameObject player in players)
         {
-            if(hit.transform.tag == "Player")
+            direction = player.transform.position - transform.position;
+            angle = Vector3.Angle(transform.forward, direction);
+
+            if (angle <= detectAngle && Physics.Linecast(transform.position, player.transform.position, out RaycastHit hit) && detectDistance >= Vector3.Distance(transform.position, player.transform.position))
             {
-                SetAITargetLocation(hit.point);
+                target = player;
+                SetAITargetLocation(hit.transform.position);
             }
         }
 
