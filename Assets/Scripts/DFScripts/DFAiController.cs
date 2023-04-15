@@ -16,6 +16,7 @@ public class DFAiController : MonoBehaviour
     void Start()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
+        players = GameObject.FindGameObjectsWithTag("Player");
     }
 
     // Update is called once per frame
@@ -35,7 +36,7 @@ public class DFAiController : MonoBehaviour
         }
 
         Wander();
-        if (followingPlayer == false)
+        if (!followingPlayer)
         {
             timer += Time.deltaTime;
         }
