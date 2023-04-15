@@ -9,11 +9,14 @@ public class AIController : MonoBehaviour
     private NavMeshPath _navMeshPath;
     private LineRenderer lineRenderer;
     private Vector3 direction;
+    private bool hasTarget = false;
+    private int currentPoint;
     private float angle;
 
     public float detectDistance;
     public float detectAngle;
 
+    public GameObject[] waypoints;
     public GameObject[] players;
 
     // Start is called before the first frame update
@@ -23,12 +26,18 @@ public class AIController : MonoBehaviour
         _navMeshPath = new NavMeshPath();
         lineRenderer = GetComponent<LineRenderer>();
         players = GameObject.FindGameObjectsWithTag("Player");
+        Patrol();
     }
 
     // Update is called once per frame
     void Update()
     {
         ChasePlayer();
+
+        if (!hasTarget && !_navMeshAgent.hasPath)
+        {
+            Patrol();
+        }
 
         if (_navMeshAgent.hasPath)
         {
@@ -71,7 +80,18 @@ public class AIController : MonoBehaviour
             if (target != null)
             {
                 SetAITargetLocation(target.transform.position);
+                hasTarget = true;
+            } 
+            else
+            {
+                hasTarget = false;
             }
         }
+    }
+
+    private void Patrol()
+    {
+        SetAITargetLocation(waypoints[currentPoint].transform.position);
+        currentPoint = (currentPoint + 1) % waypoints.Length;
     }
 }
