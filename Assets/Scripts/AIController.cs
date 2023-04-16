@@ -25,9 +25,12 @@ public class AIController : MonoBehaviour
         _navMeshAgent = GetComponent<NavMeshAgent>();
         _navMeshPath = new NavMeshPath();
         lineRenderer = GetComponent<LineRenderer>();
-        players = GameObject.FindGameObjectsWithTag("Player");
-        Patrol();
 
+        // Create a list of all gameobjects tagged player
+        players = GameObject.FindGameObjectsWithTag("Player");
+
+        // Run patrol at start
+        Patrol();
     }
 
     // Update is called once per frame
@@ -40,6 +43,7 @@ public class AIController : MonoBehaviour
             Patrol();
         }
 
+        // If the AI has a path create the line renderer else disable it
         if (_navMeshAgent.hasPath)
         {
             CreateAIPath();
@@ -73,6 +77,7 @@ public class AIController : MonoBehaviour
             direction = player.transform.position - transform.position;
             angle = Vector3.Angle(transform.forward, direction);
 
+            // If player is in fov, send out a raycast to see if they are obstructed by an object, and if they are within the view distance, set the player as a target
             if (angle <= detectAngle && Physics.Linecast(transform.position, player.transform.position, out RaycastHit hit) && detectDistance >= Vector3.Distance(transform.position, player.transform.position))
             {
                 target = hit.transform.gameObject;
@@ -90,8 +95,25 @@ public class AIController : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Player")
+        {
+            StartCoroutine(Kill(other.gameObject));
+        }
+    }
+
+    // Kill the object, wait 3 seconds, and then respawn it
+    IEnumerator Kill(GameObject target)
+    {
+        target.SetActive(false);
+        yield return new WaitForSeconds(3);
+        target.SetActive(true);
+    }
+
     private void Patrol()
     {
+        // Current point = current destination, if destination is reach increment current point by 1, use % waypoint.Length so it stays within the list range
         SetAITargetLocation(waypoints[currentPoint].transform.position);
         currentPoint = (currentPoint + 1) % waypoints.Length;
     }
