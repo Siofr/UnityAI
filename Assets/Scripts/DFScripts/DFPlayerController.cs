@@ -10,6 +10,7 @@ public class DFPlayerController : MonoBehaviour
     private LineRenderer lineRenderer;
     public int mouseClick = 1;
     private Animator animator;
+    public GameObject quad;
 
     // Start is called before the first frame update
     void Start()
@@ -71,6 +72,26 @@ public class DFPlayerController : MonoBehaviour
         {
             Vector3 pointPosition = new Vector3(navMeshAgent.path.corners[i].x, navMeshAgent.path.corners[i].y, navMeshAgent.path.corners[i].z);
             lineRenderer.SetPosition(i, pointPosition);
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.tag == "Player")
+        {
+            quad.SetActive(true);
+        }
+        /*else
+        {
+            quad.SetActive(false);
+        }*/
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "Player")
+        {
+            quad.SetActive(false);
         }
     }
 }
