@@ -8,6 +8,7 @@ public class DFPlayerController : MonoBehaviour
     private NavMeshAgent navMeshAgent;
     public GameObject clickMarker;
     private LineRenderer lineRenderer;
+    public int mouseClick = 1;
 
     // Start is called before the first frame update
     void Start()
@@ -15,8 +16,8 @@ public class DFPlayerController : MonoBehaviour
         navMeshAgent = GetComponent<NavMeshAgent>();
         lineRenderer= GetComponent<LineRenderer>();
 
-        lineRenderer.startWidth = 0.19f;
-        lineRenderer.endWidth = 0.11f;
+        lineRenderer.startWidth = 0.15f;
+        lineRenderer.endWidth = 0.15f;
         lineRenderer.positionCount = 0;
     }
 
@@ -24,7 +25,7 @@ public class DFPlayerController : MonoBehaviour
     void Update()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(mouseClick))
         {
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
