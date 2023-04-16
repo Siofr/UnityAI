@@ -13,10 +13,12 @@ public class DFAiController : MonoBehaviour
     public float viewDistance = 5;
     public bool followingPlayer;
     public GameObject viewRadius;
+    private Animator animator;
 
     // Start is called before the first frame update
     void Start()
     {
+        animator = GetComponent<Animator>();
         viewRadius.transform.localScale = new Vector3(viewDistance, 0.01f, viewDistance);
         navMeshAgent = GetComponent<NavMeshAgent>();
         players = GameObject.FindGameObjectsWithTag("Player");
@@ -32,10 +34,12 @@ public class DFAiController : MonoBehaviour
             {
                 followingPlayer = true;
                 FollowPlayer(Player);
+                //animator.SetBool("moving", true);
             }
             else
             {
                 followingPlayer = false;
+                //animator.SetBool("moving", false);
             }
         }
 
@@ -43,6 +47,15 @@ public class DFAiController : MonoBehaviour
         if (!followingPlayer)
         {
             timer += Time.deltaTime;
+        }
+
+        if (navMeshAgent.hasPath)
+        {
+            animator.SetBool("moving", true);
+        }
+        else
+        {
+            animator.SetBool("moving", false);
         }
     }
 
