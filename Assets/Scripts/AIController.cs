@@ -27,6 +27,7 @@ public class AIController : MonoBehaviour
         lineRenderer = GetComponent<LineRenderer>();
         players = GameObject.FindGameObjectsWithTag("Player");
         Patrol();
+
     }
 
     // Update is called once per frame
